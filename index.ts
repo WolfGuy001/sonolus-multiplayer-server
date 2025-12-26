@@ -7,6 +7,7 @@ import { WebSocketServer } from "ws";
 import { Sonolus } from "@sonolus/express";
 import { Text } from "@sonolus/core";
 import { MultiplayerRoom } from "./multiplayer";
+import { resultsStore } from "./resultsStore";
 
 const port = 3000;
 const app = express();
@@ -59,6 +60,206 @@ app.use((req, res, next) => {
   if (req.url.startsWith("/multiplayer")) return next();
   res.set("Sonolus-Version", "1.0.2");
   next();
+});
+
+// --- LEADERBOARD ---
+
+app.get("/leaderboard", (req, res) => {
+  console.log("[Leaderboard] Accessing leaderboard page");
+  res.set(
+    "Content-Security-Policy",
+    "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data:;",
+  );
+  const history = resultsStore.getHistory();
+
+  // Calculate Global Rating
+  const globalStats = new Map<string, { name: string; totalScore: number; matchCount: number }>();
+  history.forEach(match => {
+    match.results.forEach(r => {
+      const stats = globalStats.get(r.userId) || { name: r.userName || 'Unknown', totalScore: 0, matchCount: 0 };
+      stats.totalScore += r.result.arcadeScore;
+      stats.matchCount += 1;
+      stats.name = r.userName || stats.name; // Keep latest name
+      globalStats.set(r.userId, stats);
+    });
+  });
+
+  const sortedGlobal = Array.from(globalStats.values())
+    .sort((a, b) => b.totalScore - a.totalScore);
+
+  let html = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Match History</title>
+        <style>
+            body { font-family: sans-serif; background: #222; color: #eee; padding: 20px; }
+            table { width: 100%; border-collapse: collapse; background: #333; margin-bottom: 30px; }
+            th, td { padding: 10px; border: 1px solid #444; text-align: left; vertical-align: top; }
+            th { background: #444; }
+            .rank-1 { color: #ffd700; font-weight: bold; }
+            .rank-2 { color: #c0c0c0; font-weight: bold; }
+            .rank-3 { color: #cd7f32; font-weight: bold; }
+            .grade-allPerfect { color: #ffeb3b; text-shadow: 0 0 5px #ffeb3b; }
+            .grade-fullCombo { color: #03a9f4; }
+            .grade-pass { color: #8bc34a; }
+            .grade-fail { color: #f44336; }
+            .level-artist { font-size: 0.8em; color: #aaa; }
+            .section-title { margin-top: 40px; margin-bottom: 10px; color: #fff; border-bottom: 2px solid #444; padding-bottom: 5px; }
+        </style>
+    </head>
+    <body>
+        <h1>Лидерборд</h1>
+        
+        <h2 class="section-title">Общий рейтинг сервера</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 50px;">Место</th>
+                    <th>Игрок</th>
+                    <th style="text-align: right;">Всего очков</th>
+                    <th style="text-align: right;">Матчей</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+  if (sortedGlobal.length === 0) {
+    html += `<tr><td colspan="4" style="text-align:center; padding: 20px;">Рейтинг пока пуст.</td></tr>`;
+  } else {
+    sortedGlobal.forEach((player, index) => {
+      const rank = index + 1;
+      const rankClass = rank <= 3 ? `rank-${rank}` : "";
+      html += `
+                <tr>
+                    <td class="${rankClass}">#${rank}</td>
+                    <td><span class="${rankClass}">${player.name}</span></td>
+                    <td style="text-align: right;">${player.totalScore.toLocaleString()}</td>
+                    <td style="text-align: right;">${player.matchCount}</td>
+                </tr>
+            `;
+    });
+  }
+
+  html += `
+            </tbody>
+        </table>
+
+        <h2 class="section-title">История матчей</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>Рума</th>
+                    <th>Уровень</th>
+                    <th>Результаты</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+  if (history.length === 0) {
+    html += `
+            <tr>
+                <td colspan="4" style="text-align:center; padding: 50px;">Нет истории матчей.</td>
+            </tr>
+    `;
+  }
+
+  history.forEach((match) => {
+    const date = new Date(match.timestamp).toLocaleString();
+
+    const rawLevel = match.level as any;
+    const rawTitle = rawLevel?.title;
+    const levelTitle =
+      typeof rawTitle === "string"
+        ? rawTitle
+        : rawTitle?.en || rawTitle?.ru || rawLevel?.name || "Unknown Level";
+
+    const rawArtist = rawLevel?.artists;
+    const levelArtist =
+      typeof rawArtist === "string"
+        ? rawArtist
+        : rawArtist?.en || rawArtist?.ru || "";
+
+    // Sort results by score desc
+    const sortedResults = [...match.results].sort(
+      (a, b) => b.result.arcadeScore - a.result.arcadeScore,
+    );
+
+    let resultsHtml = '<table style="width:100%; background:transparent;">';
+    sortedResults.forEach((r, index) => {
+      const rank = index + 1;
+      const rankClass = rank <= 3 ? `rank-${rank}` : "";
+      const gradeClass = `grade-${r.result.grade}`;
+      const userName = r.userName || "Unknown";
+
+      resultsHtml += `
+                <tr>
+                    <td style="border:none; width: 30px;" class="${rankClass}">#${rank}</td>
+                    <td style="border:none;">
+                        <span class="${rankClass}">${userName}</span>
+                    </td>
+                    <td style="border:none; text-align:right;">${r.result.arcadeScore.toLocaleString()}</td>
+                    <td style="border:none; text-align:right;" class="${gradeClass}">${r.result.grade}</td>
+                    <td style="border:none; text-align:right; font-size:0.8em;">Combo: ${r.result.combo}</td>
+                </tr>
+            `;
+    });
+    resultsHtml += "</table>";
+
+    html += `
+            <tr>
+                <td>${date}</td>
+                <td>${match.roomName}</td>
+                <td>
+                    <div><strong>${levelTitle}</strong></div>
+                    <div class="level-artist">${levelArtist}</div>
+                </td>
+                <td style="padding: 0;">${resultsHtml}</td>
+            </tr>
+        `;
+  });
+
+  html += `
+            </tbody>
+        </table>
+        <div style="margin-top: 20px; display: flex; justify-content: flex-end;">
+            <form id="reset-form" action="/reset-leaderboard" method="POST">
+                <input type="hidden" name="password" id="reset-password">
+                <button type="submit" style="background: #f44336; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+                    Reset Match History
+                </button>
+            </form>
+        </div>
+        <script>
+            document.getElementById('reset-form').onsubmit = function(e) {
+                const pw = prompt('Ненене, сначала пароль:');
+                if (!pw) return false;
+                document.getElementById('reset-password').value = pw;
+                return true;
+            };
+        </script>
+    </body>
+    </html>
+    `;
+
+  res.send(html);
+});
+
+app.post("/reset-leaderboard", (req, res) => {
+  const password = req.body.password;
+  // Можно вынести пароль в константу или .env. Сейчас "admin" для примера.
+  if (password !== "admin") {
+    console.warn("[Leaderboard] Reset failed: Invalid password");
+    return res.status(403).send("Invalid password. <a href='/leaderboard'>Go back</a>");
+  }
+
+  console.log("[Leaderboard] Resetting match history (authorized)");
+  resultsStore.clearHistory();
+  res.redirect("/leaderboard");
 });
 
 // --- AUTHENTICATION & JOIN HANDLERS ---
@@ -287,10 +488,18 @@ if ((sonolus as any).levelResult) {
   });
 }
 
-app.use(sonolus.router);
 app.get("/sonolus/banner", (req, res) =>
   res.sendFile(path.join(__dirname, "banner.png")),
 );
+
+
+app.use(sonolus.router);
+
+app.use((req, res) => {
+  console.warn(`[404] Route not found: ${req.method} ${req.url}`);
+  res.set("Sonolus-Version", "1.0.2");
+  res.status(404).send("Not Found");
+});
 
 server.listen(port, () => {
   console.log(`--- SONOLUS SERVER READY (WITH AUTH) ---`);

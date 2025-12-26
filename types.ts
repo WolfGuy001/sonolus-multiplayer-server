@@ -35,6 +35,7 @@ export type ScoreboardSection = {
 export type ResultEntry = {
     userId: ServiceUserId
     result: GameplayResult
+    userName?: string
 }
 
 export type UserStatusEntry = {

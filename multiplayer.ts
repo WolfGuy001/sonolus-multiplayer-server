@@ -1,6 +1,7 @@
 import { WebSocket } from 'ws'
 import { RoomStatus, UserStatus, ChatMessage, GameplayResult, ScoreboardSection, ResultEntry, UserStatusEntry, Suggestion, LevelOptionEntry } from './types'
 import { Sil, ServerForm, LevelItem, RoomUser, ServiceUserId } from '@sonolus/core'
+import { resultsStore } from './resultsStore'
 
 export class MultiplayerRoom {
     public name: string
@@ -204,8 +205,11 @@ export class MultiplayerRoom {
                 console.log(`[Room] finishGameplay from ${userId}`);
                 // Record results
                 if (command.result) {
-                    this.results.push({ userId, result: command.result })
-                    this.broadcast({ type: 'addResult', result: { userId, result: command.result } })
+                    const user = this.users.find(u => u.profile.id === userId);
+                    const userName = user ? user.profile.name : "Unknown";
+
+                    this.results.push({ userId, result: command.result, userName })
+                    this.broadcast({ type: 'addResult', result: { userId, result: command.result, userName } })
 
                     // Check if all playing users have finished
                     const activePlayers = this.users.filter(u => u.status === 'playing' && !this.results.find(r => r.userId === u.profile.id))
@@ -228,6 +232,10 @@ export class MultiplayerRoom {
     private finishMatch() {
         if (this.forceFinishTimer) clearTimeout(this.forceFinishTimer);
         this.forceFinishTimer = null;
+
+        // Record to leaderboard
+        const resolvedTitle = typeof this.title === 'string' ? this.title : (this.title.en || this.title.ru || 'Room');
+        resultsStore.addMatch(resolvedTitle, this.level, this.results);
 
         this.updateScoreboard();
         this.status = 'selecting';

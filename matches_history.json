@@ -1,0 +1,226 @@
+[
+  {
+    "id": "1766781762366",
+    "timestamp": 1766781762366,
+    "roomName": "Test Public Lobby",
+    "level": {
+      "address": "https://sonolus.sekai.best",
+      "name": "sekai-best-186-420-expert"
+    },
+    "results": [
+      {
+        "userId": "57737d9c7a7ce0599fdaf3e4c80c7a02ab96c288856a795b5e5420ce271c5fb5",
+        "result": {
+          "grade": "pass",
+          "arcadeScore": 976582,
+          "accuracyScore": 989754,
+          "combo": 1252,
+          "perfect": 1564,
+          "great": 14,
+          "good": 0,
+          "miss": 3,
+          "totalCount": 1581
+        },
+        "userName": "mrshpshn"
+      },
+      {
+        "userId": "3b5fff3771332a924c5a878ec049eec6aa00390c9b72a6a5c7660089a61d073a",
+        "result": {
+          "grade": "fullCombo",
+          "arcadeScore": 996022,
+          "accuracyScore": 986886,
+          "combo": 1581,
+          "perfect": 1560,
+          "great": 21,
+          "good": 0,
+          "miss": 0,
+          "totalCount": 1581
+        },
+        "userName": "XloR "
+      },
+      {
+        "userId": "d8cf23b8b7d7c58fd02b56a52a189a89621920975e343747fcd17a90b92e1a0c",
+        "result": {
+          "grade": "fail",
+          "arcadeScore": 872258,
+          "accuracyScore": 976772,
+          "combo": 127,
+          "perfect": 1302,
+          "great": 216,
+          "good": 31,
+          "miss": 32,
+          "totalCount": 1581
+        },
+        "userName": "wolfguy00 "
+      }
+    ]
+  },
+  {
+    "id": "1766781458174",
+    "timestamp": 1766781458174,
+    "roomName": "Test Public Lobby",
+    "level": {
+      "address": "https://sonolus.sekai.best",
+      "name": "sekai-best-253-627-expert"
+    },
+    "results": [
+      {
+        "userId": "3b5fff3771332a924c5a878ec049eec6aa00390c9b72a6a5c7660089a61d073a",
+        "result": {
+          "grade": "fullCombo",
+          "arcadeScore": 999196,
+          "accuracyScore": 989890,
+          "combo": 1102,
+          "perfect": 1099,
+          "great": 3,
+          "good": 0,
+          "miss": 0,
+          "totalCount": 1102
+        },
+        "userName": "XloR "
+      },
+      {
+        "userId": "57737d9c7a7ce0599fdaf3e4c80c7a02ab96c288856a795b5e5420ce271c5fb5",
+        "result": {
+          "grade": "fullCombo",
+          "arcadeScore": 998385,
+          "accuracyScore": 990903,
+          "combo": 1102,
+          "perfect": 1096,
+          "great": 6,
+          "good": 0,
+          "miss": 0,
+          "totalCount": 1102
+        },
+        "userName": "mrshpshn"
+      },
+      {
+        "userId": "d8cf23b8b7d7c58fd02b56a52a189a89621920975e343747fcd17a90b92e1a0c",
+        "result": {
+          "grade": "pass",
+          "arcadeScore": 947287,
+          "accuracyScore": 988365,
+          "combo": 348,
+          "perfect": 1057,
+          "great": 40,
+          "good": 4,
+          "miss": 1,
+          "totalCount": 1102
+        },
+        "userName": "wolfguy00 "
+      }
+    ]
+  },
+  {
+    "id": "1766781139229",
+    "timestamp": 1766781139229,
+    "roomName": "Test Public Lobby",
+    "level": {
+      "address": "https://sonolus.sekai.best",
+      "name": "sekai-best-513-1070-master"
+    },
+    "results": [
+      {
+        "userId": "3b5fff3771332a924c5a878ec049eec6aa00390c9b72a6a5c7660089a61d073a",
+        "result": {
+          "grade": "fullCombo",
+          "arcadeScore": 998077,
+          "accuracyScore": 990417,
+          "combo": 1101,
+          "perfect": 1094,
+          "great": 7,
+          "good": 0,
+          "miss": 0,
+          "totalCount": 1101
+        },
+        "userName": "XloR "
+      },
+      {
+        "userId": "57737d9c7a7ce0599fdaf3e4c80c7a02ab96c288856a795b5e5420ce271c5fb5",
+        "result": {
+          "grade": "pass",
+          "arcadeScore": 964489,
+          "accuracyScore": 989993,
+          "combo": 581,
+          "perfect": 1091,
+          "great": 7,
+          "good": 1,
+          "miss": 2,
+          "totalCount": 1101
+        },
+        "userName": "mrshpshn"
+      },
+      {
+        "userId": "d8cf23b8b7d7c58fd02b56a52a189a89621920975e343747fcd17a90b92e1a0c",
+        "result": {
+          "grade": "pass",
+          "arcadeScore": 932844,
+          "accuracyScore": 986155,
+          "combo": 349,
+          "perfect": 1036,
+          "great": 50,
+          "good": 3,
+          "miss": 12,
+          "totalCount": 1101
+        },
+        "userName": "wolfguy00 "
+      }
+    ]
+  },
+  {
+    "id": "1766780777574",
+    "timestamp": 1766780777574,
+    "roomName": "Test Public Lobby",
+    "level": {
+      "address": "https://sonolus.sekai.best",
+      "name": "sekai-best-113-161-expert"
+    },
+    "results": [
+      {
+        "userId": "3b5fff3771332a924c5a878ec049eec6aa00390c9b72a6a5c7660089a61d073a",
+        "result": {
+          "grade": "fullCombo",
+          "arcadeScore": 998195,
+          "accuracyScore": 989196,
+          "combo": 1156,
+          "perfect": 1149,
+          "great": 7,
+          "good": 0,
+          "miss": 0,
+          "totalCount": 1156
+        },
+        "userName": "XloR "
+      },
+      {
+        "userId": "57737d9c7a7ce0599fdaf3e4c80c7a02ab96c288856a795b5e5420ce271c5fb5",
+        "result": {
+          "grade": "fullCombo",
+          "arcadeScore": 997894,
+          "accuracyScore": 989911,
+          "combo": 1156,
+          "perfect": 1148,
+          "great": 8,
+          "good": 0,
+          "miss": 0,
+          "totalCount": 1156
+        },
+        "userName": "mrshpshn"
+      },
+      {
+        "userId": "d8cf23b8b7d7c58fd02b56a52a189a89621920975e343747fcd17a90b92e1a0c",
+        "result": {
+          "grade": "pass",
+          "arcadeScore": 920989,
+          "accuracyScore": 984363,
+          "combo": 168,
+          "perfect": 1066,
+          "great": 72,
+          "good": 6,
+          "miss": 12,
+          "totalCount": 1156
+        },
+        "userName": "wolfguy00 "
+      }
+    ]
+  }
+]
